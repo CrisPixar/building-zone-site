@@ -1002,7 +1002,10 @@ section {
   aspect-ratio: 16 / 8;
   position: relative;
   overflow: hidden;
-  background: #000;
+  /* фон-заглушка, пока фото грузится: слайд никогда не выглядит просто чёрным */
+  background:
+    radial-gradient(120% 120% at 50% 30%, rgba(253, 171, 114, 0.09), transparent 60%),
+    linear-gradient(160deg, #170d07 0%, #0d0704 55%, #140b06 100%);
 }
 .slide img {
   position: absolute;

@@ -31,6 +31,7 @@ const FEATURES = [
   },
 ];
 
+/* 8 скриншотов сервера: public/images/one.jpg ... eight.jpg */
 const SLIDES = [
   './images/one.jpg',
   './images/two.jpg',
@@ -237,43 +238,67 @@ export default function App() {
   const pauseRef = useRef(false);
   const touchX = useRef<number | null>(null);
 
-  /* настоящая загрузка: шрифты + все фото галереи */
+  /* прелоадер: ждём шрифты и первый слайд; ошибка загрузки тоже завершает ожидание */
   useEffect(() => {
     let alive = true;
-    const done = new Set<string>();
-    const total = SLIDES.length;
+    let finished = false;
+    const marks = new Set<string>();
+    const need = 2; // шрифты + первый слайд
 
-    const tick = () => {
-      if (!alive) return;
-      setProgress(Math.min(99, Math.round((done.size / total) * 100)));
-    };
-
-    const loadImg = (src: string) =>
-      new Promise<void>((resolve) => {
-        const im = new Image();
-        const fin = () => {
-          done.add(src);
-          tick();
-          resolve();
-        };
-        im.onload = fin;
-        im.onerror = fin; // фото нет - просто чёрный слайд, загрузка идёт дальше
-        im.src = src;
-      });
-
-    Promise.all([
-      ...SLIDES.map(loadImg),
-      (document as Document & { fonts?: FontFaceSet }).fonts?.ready ?? Promise.resolve(),
-    ]).then(() => {
-      if (!alive) return;
+    const finish = () => {
+      if (finished || !alive) return;
+      finished = true;
       setProgress(100);
       window.setTimeout(() => alive && setLoaded(true), 320);
-    });
+    };
+
+    const mark = (key: string) => {
+      if (finished || !alive) return;
+      marks.add(key);
+      setProgress(Math.min(99, Math.round((marks.size / need) * 100)));
+      if (marks.size >= need) finish();
+    };
+
+    const first = new Image();
+    first.onload = () => mark('slide');
+    first.onerror = () => mark('slide');
+    first.src = SLIDES[0];
+
+    const fonts = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
+    if (fonts) {
+      fonts.then(
+        () => mark('fonts'),
+        () => mark('fonts')
+      );
+    } else {
+      mark('fonts');
+    }
+
+    // страховка: застрявшая сеть или шрифты не должны держать прелоадер вечно
+    const hardStop = window.setTimeout(finish, 6000);
 
     return () => {
       alive = false;
+      window.clearTimeout(hardStop);
     };
   }, []);
+
+  /* остальные слайды догружаем в фоне, чтобы при листании не было чёрных кадров */
+  useEffect(() => {
+    if (!loaded) return;
+    const imgs = SLIDES.slice(1).map((src) => {
+      const im = new Image();
+      im.decoding = 'async';
+      im.src = src;
+      return im;
+    });
+    return () => {
+      imgs.forEach((im) => {
+        im.onload = null;
+        im.onerror = null;
+      });
+    };
+  }, [loaded]);
 
   useEffect(() => {
     document.body.style.overflow = loaded ? '' : 'hidden';
@@ -711,8 +736,10 @@ export default function App() {
                 <div className="slide" key={src} aria-hidden={i !== idx}>
                   <img
                     src={src}
-                    alt={`Постройка Building Zone, фото ${i + 1}`}
+                    alt={`Постройка Building Zone, фото ${i + 1} из ${SLIDES.length}`}
                     decoding="async"
+                    loading="eager"
+                    fetchPriority={i === 0 ? 'high' : 'low'}
                     draggable={false}
                     onError={hideBroken}
                   />

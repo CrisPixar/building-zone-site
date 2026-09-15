@@ -3,22 +3,37 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta name="description" content="Building Zone" />
-    <meta name="theme-color" content="#0D0704" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@700;800;900&display=block"
-      rel="stylesheet"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Golos+Text:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;700&display=swap"
-      rel="stylesheet"
-    />
     <title>Building Zone - Minecraft сервер</title>
+    <meta
+      name="description"
+      content="Building Zone - творческий Minecraft Bedrock сервер: постройки, галерея, дружное комьюнити. Адрес сервера: play.buildzone.lol:25903, версия 1.21.50-51."
+    />
+    <link rel="canonical" href="https://buildzone.lol/" />
+    <meta name="theme-color" content="#0D0704" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+
+    <meta property="og:type" content="website" />
+    <meta property="og:site_name" content="Building Zone" />
+    <meta property="og:locale" content="ru_RU" />
+    <meta property="og:title" content="Building Zone - Minecraft сервер" />
+    <meta
+      property="og:description"
+      content="Творческое пространство для тех, кто ценит эстетику Minecraft. Подключайся: play.buildzone.lol:25903 (Bedrock 1.21.50-51)."
+    />
+    <meta property="og:url" content="https://buildzone.lol/" />
+    <meta property="og:image" content="https://buildzone.lol/images/one.jpg" />
+    <meta name="twitter:card" content="summary_large_image" />
+
+    <!-- Шрифты лежат локально (/fonts/*.woff2), подключаются в src/index.css.
+         Preload только для того, что нужно на первом экране. -->
+    <link rel="preload" href="/fonts/unbounded-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/unbounded-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/fonts/golos-text-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
+    <link rel="preload" href="/images/one.webp" as="image" type="image/webp" />
   </head>
   <body>
     <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+    <script type="module" src="/src/main.ts"></script>
   </body>
 </html>

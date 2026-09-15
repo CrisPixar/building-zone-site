@@ -197,7 +197,7 @@ function VoxelCanvas({ enabled }: { enabled: boolean }) {
 
 /* ============ расшифровка заголовков ============ */
 
-const SCR_CHARS = '█▓▒░<>/\\|+=*—BZ';
+const SCR_CHARS = '█▓▒░<>/\\|+=*-BZ';
 function scramble(el: HTMLElement) {
   const final = el.dataset.final || el.textContent || '';
   let frame = 0;

@@ -1,8 +1,6 @@
 # Кеширование для Cloudflare Pages (файл читается хостингом автоматически).
-# Фото меняются под теми же именами, поэтому держим умеренный max-age + stale-while-revalidate.
+# Шрифты встроены прямо в index.html (см. scripts/build-fonts.mjs), поэтому
+# правил для /fonts/ больше нет.
+# Фото меняются под теми же именами, поэтому умеренный max-age + stale-while-revalidate.
 /images/*
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
-
-# Шрифты не меняются никогда (имя файла = версия) - можно кешировать на год.
-/fonts/*
-  Cache-Control: public, max-age=31536000, immutable

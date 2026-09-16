@@ -30,11 +30,11 @@ export function mount(root: HTMLElement) {
 
   document.body.style.overflow = 'hidden';
 
-  /* ---------- прелоадер: ждём шрифты и первый слайд ---------- */
+  /* ---------- прелоадер: ждём шрифты и все фото галереи ---------- */
 
   let finished = false;
-  const marks = new Set<string>();
-  const need = 2;
+  let done = 0;
+  let need = 1; // шрифты (складывается с числом фото ниже)
   const setProgress = (v: number) => {
     if (fill) fill.style.width = `${v}%`;
     if (counter) counter.textContent = `${String(v).padStart(3, '0')} %`;
@@ -45,29 +45,33 @@ export function mount(root: HTMLElement) {
     setProgress(100);
     window.setTimeout(onLoaded, 320);
   };
-  const mark = (key: string) => {
+  const mark = () => {
     if (finished) return;
-    marks.add(key);
-    setProgress(Math.min(99, Math.round((marks.size / need) * 100)));
-    if (marks.size >= need) finish();
+    done++;
+    setProgress(Math.min(99, Math.round((done / need) * 100)));
+    if (done >= need) finish();
   };
 
-  // первый слайд уже есть в разметке - ждём именно его, без второго запроса
-  const firstSlide = document.querySelector<HTMLImageElement>('#gal-track img');
-  if (firstSlide && firstSlide.complete) mark('slide');
-  else if (firstSlide) {
-    firstSlide.addEventListener('load', () => mark('slide'), { once: true });
-    firstSlide.addEventListener('error', () => mark('slide'), { once: true });
-  } else {
-    mark('slide');
-  }
+  // все слайды уже есть в разметке и грузятся с приоритетом: ждём каждый
+  const slides = Array.from(document.querySelectorAll<HTMLImageElement>('#gal-track img'));
+  need += slides.length;
+  const once = (img: HTMLImageElement) => {
+    if (img.complete && img.naturalWidth > 0) {
+      mark();
+      return;
+    }
+    img.addEventListener('load', mark, { once: true });
+    img.addEventListener('error', mark, { once: true });
+  };
+  slides.forEach(once);
 
   const fonts = (document as Document & { fonts?: FontFaceSet }).fonts?.ready;
-  if (fonts) fonts.then(() => mark('fonts'), () => mark('fonts'));
-  else mark('fonts');
+  if (fonts) fonts.then(mark, mark);
+  else mark();
 
-  // страховка: застрявшая сеть или шрифты не должны держать прелоадер вечно
-  const hardStop = window.setTimeout(finish, 6000);
+  // страховка: медленная сеть не должна держать прелоадер вечно,
+  // дальше фото догружаются в фоне
+  const hardStop = window.setTimeout(finish, 9000);
 
   function onLoaded() {
     if (loaded) return;

@@ -68,9 +68,11 @@ function slides(): string {
       `<div class="slide" aria-hidden="${i !== 0}">` +
       `<picture>` +
       `<source srcset="${webp(name)}" type="image/webp" />` +
+      // Все слайды грузятся сразу вместе со страницей (их ждёт прелоадер),
+      // чтобы при листании не было чёрных кадров. Первый - с высоким приоритетом.
       `<img src="${jpg(name)}" alt="${esc(
         `Постройка Building Zone, фото ${i + 1} из ${IMAGES.length}`
-      )}" width="${IMG_W}" height="${IMG_H}" decoding="async" loading="${first ? 'eager' : 'lazy'}" ` +
+      )}" width="${IMG_W}" height="${IMG_H}" decoding="async" loading="eager" ` +
       `fetchpriority="${first ? 'high' : 'low'}" draggable="false" />` +
       `</picture></div>`
     );

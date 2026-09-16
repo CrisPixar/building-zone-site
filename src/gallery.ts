@@ -22,6 +22,9 @@ export function initGallery(isReady: () => boolean) {
   let idx = 0;
   let paused = false;
 
+  // все слайды грузятся вместе со страницей (их ждёт прелоадер), поэтому
+  // отдельная догрузка нужна только как страховка: если сеть не успела
+  // и прелоадер отпустило по таймауту, дотягиваем текущий и следующий слайды.
   const preload = (i: number) => {
     const n = ((i % total) + total) % total;
     if (loading.has(n)) return;

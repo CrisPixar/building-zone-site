@@ -5,7 +5,9 @@
   "type": "module",
   "scripts": {
     "dev": "vite",
+    "predev": "node scripts/build-fonts.mjs",
     "build": "vite build",
+    "prebuild": "node scripts/build-fonts.mjs",
     "preview": "vite preview",
     "typecheck": "tsc --noEmit"
   },

@@ -24,13 +24,10 @@
     <meta property="og:image" content="https://buildzone.lol/images/one.jpg" />
     <meta name="twitter:card" content="summary_large_image" />
 
-    <!-- Шрифты лежат локально (/fonts/*.woff2), подключаются в src/index.css.
-         Preload только для того, что нужно на первом экране. -->
-    <link rel="preload" href="/fonts/unbounded-latin-700-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/unbounded-latin-900-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/golos-text-cyrillic-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/fonts/golos-text-latin-400-normal.woff2" as="font" type="font/woff2" crossorigin />
-    <link rel="preload" href="/images/one.webp" as="image" type="image/webp" />
+    <!-- Шрифты встроены в страницу как data:URI (см. scripts/build-fonts.mjs),
+         поэтому preload для них не нужен: отдельных запросов нет.
+         Preload только для первого фото галереи. -->
+    <link rel="preload" href="./images/one.webp" as="image" type="image/webp" />
   </head>
   <body>
     <div id="root"></div>

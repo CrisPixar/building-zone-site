@@ -669,17 +669,27 @@ body::after {
   vertical-align: bottom;
   padding-bottom: 0.09em;
   margin: 0 0.14em;
+  /* Фиксированная высота «маски» слова: буквы выезжают снизу отступом
+     (см. .ht-letter), и без этого строка заголовка растягивалась бы на их ход.
+     Значение 1.07em = строка 0.98em + padding 0.09em, то есть ровно та высота,
+     что была у маски до правки, поэтому вёрстка не меняется ни на пиксель. */
+  height: 1.07em;
 }
 .ht-letter {
   display: inline-block;
-  transform: translateY(118%);
 }
 .ready .ht-letter {
+  /* Буква стартует ниже маски и поднимается на место.
+     Двигать её приходится именно отступом: transform (как и top/clip-path/opacity)
+     у дочернего элемента выносит букву в отдельный слой отрисовки, и градиентная
+     заливка текста (background-clip: text) до неё не доходит - заголовок
+     остаётся полностью прозрачным. */
+  margin-top: 1.18em;
   animation: letterUp 0.9s cubic-bezier(0.22, 1, 0.36, 1) forwards;
 }
 @keyframes letterUp {
   to {
-    transform: translateY(0);
+    margin-top: 0;
   }
 }
 .hero-sub {
